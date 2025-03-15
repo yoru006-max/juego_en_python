@@ -29,3 +29,34 @@ jugadorX_cambio = 0
 # Función para dibujar al jugador
 def jugador(x, y):
     pantalla.blit(jugadorImg(x,y))
+# Ciclo principal del juego
+ejecutando = True
+while ejecutando:
+    pantalla.fill((0, 0, 0))
+    pantalla.blit(fondo, (0, 0))
+
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
+            ejecutando = False
+
+        if evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_LEFT:
+                jugadorX_cambio = -5
+            if evento.key == pygame.K_RIGHT:
+                jugadorX_cambio = 5
+
+        elif evento.type == pygame.KEYUP:
+            if evento.key == pygame.K_LEFT or evento.key == pygame.K_RIGHT:
+                jugadorX_cambio = 0
+
+    # Validación de los limites del jugador
+    jugadorX += jugadorX_cambio
+    if jugadorX <= 0:
+        jugadorX = 0
+    elif jugadorX >= 736:
+        jugadorX = 736
+
+    # Dibuja el jugador
+    jugador(jugadorX, jugadorY)
+    # Actualiza la pantalla
+    pygame.display.update()
