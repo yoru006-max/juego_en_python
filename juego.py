@@ -1,4 +1,8 @@
 import pygame
+import os
+
+# Desactiva el audio si hay problemas con ALSA
+os.environ['SDL_AUDIODRIVER'] = 'dummy'
 
 # Inicialización de pygame
 pygame.init()
@@ -28,7 +32,8 @@ jugadorX_cambio = 0
 
 # Función para dibujar al jugador
 def jugador(x, y):
-    pantalla.blit(jugadorImg(x,y))
+    pantalla.blit(jugadorImg, (x, y))  # Corregido: se usa (x, y) en una tupla
+
 # Ciclo principal del juego
 ejecutando = True
 while ejecutando:
@@ -49,7 +54,7 @@ while ejecutando:
             if evento.key == pygame.K_LEFT or evento.key == pygame.K_RIGHT:
                 jugadorX_cambio = 0
 
-    # Validación de los limites del jugador
+    # Validación de los límites del jugador
     jugadorX += jugadorX_cambio
     if jugadorX <= 0:
         jugadorX = 0
@@ -58,5 +63,6 @@ while ejecutando:
 
     # Dibuja el jugador
     jugador(jugadorX, jugadorY)
+
     # Actualiza la pantalla
     pygame.display.update()
