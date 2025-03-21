@@ -1,0 +1,110 @@
+<!DOCTYPE html> 
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reloj para Alzheimer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            position: relative;
+        }
+        .reloj {
+            font-size: 2.5em;
+            margin: 20px 0;
+            font-weight: bold;
+            color: #333;
+        }
+        .boton {
+            padding: 12px 25px;
+            font-size: 1.2em;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .llamada { background-color: #28a745; color: white; }
+        .alarma { background-color: #ffc107; color: black; }
+        .ubicacion { background-color: #007bff; color: white; }
+        .boton:hover { opacity: 0.8; }
+        iframe {
+            width: 100%;
+            height: 300px;
+            margin-top: 20px;
+            border-radius: 10px;
+            display: none; /* Se oculta hasta obtener la ubicación */
+        }
+        #coords {
+            margin-top: 10px;
+            font-size: 1.2em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Reloj para Alzheimer</h1>
+        <div class="reloj" id="reloj"></div>
+        
+        <button class="boton llamada" onclick="realizarLlamada()">Llamar</button>
+        <button class="boton alarma" onclick="mostrarHoraAlarma()">Configurar Alarma</button>
+        <input type="time" id="horaAlarma">
+        <audio id="alarmaSonido" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+        
+        <button class="boton ubicacion" onclick="window.location.href='ubicacion.html'">Actualizar Ubicación</button>
+
+        
+        <div id="coords">Ubicación: Cargando...</div>
+        <a id="compartirUbicacion" href="#" target="_blank">Compartir Ubicación</a>
+        <iframe id="map"></iframe>
+    </div>
+    
+    <script>
+        function actualizarReloj() {
+            document.getElementById('reloj').innerText = new Date().toLocaleTimeString();
+        }
+        setInterval(actualizarReloj, 1000);
+        
+        function realizarLlamada() {
+            window.location.href = 'tel:+123456789';
+        }
+
+        function mostrarHoraAlarma() {
+            const inputHora = document.getElementById('horaAlarma');
+            inputHora.classList.toggle('mostrar');
+        }
+
+        function actualizarUbicacion() {
+            if (!navigator.geolocation) {
+                alert('La geolocalización no es compatible con tu navegador.');
+                return;
+            }
+            
+            navigator.geolocation.getCurrentPosition(position => {
+                const { latitude, longitude } = position.coords;
+                document.getElementById('coords').innerText = `Ubicación: Lat ${latitude}, Lng ${longitude}`;
+                
+                document.getElementById('map').style.display = 'block'; 
+                document.getElementById('map').src = `https://www.google.com/maps/embed/v1/place?key=TU_API_KEY&q=${latitude},${longitude}`;
+                
+                const enlace = `https://wa.me/?text=Mi%20ubicación:%20https://www.google.com/maps?q=${latitude},${longitude}`;
+                document.getElementById('compartirUbicacion').href = enlace;
+            }, error => {
+                alert('No se pudo obtener la ubicación. Asegúrate de otorgar permisos en tu navegador.');
+                console.error(error);
+            });
+        }
+    </script>
+</body>
+</html>
